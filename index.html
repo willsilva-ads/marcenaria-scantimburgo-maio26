@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcenaria Scantimburgo - Relatório de Performance - Maio 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #060913;
+            --bg-card: rgba(13, 20, 38, 0.45);
+            --bg-card-hover: rgba(20, 30, 58, 0.6);
+            --border-card: rgba(255, 255, 255, 0.05);
+            --accent: #00d2ff;
+            --accent-glow: rgba(0, 210, 255, 0.15);
+            --accent-rgb: 0, 210, 255;
+            --meta-color: #1877F2;
+            --google-color: #EA4335;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Cover Section styling */
+        .cover-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle at 80% 20%, rgba(0, 210, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 10% 80%, rgba(24, 119, 242, 0.08) 0%, transparent 50%);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .cover-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.15) 0%, transparent 70%);
+            top: 20%;
+            left: 5%;
+            filter: blur(50px);
+            pointer-events: none;
+        }
+
+        .cover-content {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .cover-left h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .cover-left p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .cover-right {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cover-art {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6,9,19,0.9) 0%, rgba(13,20,38,0.4) 100%);
+            border: 2px solid rgba(0, 210, 255, 0.2);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cover-art::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            border: 1px dashed rgba(24, 119, 242, 0.3);
+            animation: rotateClockwise 20s linear infinite;
+        }
+
+        .cover-art::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.4) 0%, rgba(24, 119, 242, 0.1) 100%);
+            filter: blur(20px);
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rotateClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* App Layout Grid */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            background-color: #0b0f19;
+            border-right: 1px solid var(--border-card);
+            padding: 2.5rem 1.25rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            outline: none;
+            padding: 0.25rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: grab;
+            border: 1px solid transparent;
+        }
+        
+        .nav-item:active {
+            cursor: grabbing;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.75rem 0.85rem;
+            width: 100%;
+            font-size: 0.925rem;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .nav-item.active a, .nav-item a:hover {
+            color: #fff;
+            background: rgba(0, 210, 255, 0.08);
+            border-left: 3px solid var(--accent);
+            padding-left: calc(0.85rem - 3px);
+        }
+
+        .nav-item.drag-over {
+            border: 1px dashed var(--accent);
+            background: rgba(0, 210, 255, 0.04);
+        }
+
+        .footer-branding {
+            border-top: 1px solid var(--border-card);
+            padding-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-branding strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .fullscreen-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            color: var(--accent);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            padding: 3rem;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, rgba(13, 20, 38, 0.2) 0%, transparent 60%);
+        }
+
+        /* Dashboard Header */
+        .dash-header {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 1.5rem;
+        }
+
+        .dash-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            outline: none;
+        }
+
+        .dash-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+            outline: none;
+        }
+
+        /* Section Layouts */
+        .section-block {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .section-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: var(--bg-card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            outline: none;
+        }
+
+        .card-title-icon {
+            width: 8px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* KPI Grids */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-grad, var(--accent));
+        }
+
+        .kpi-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .kpi-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+            outline: none;
+        }
+
+        .kpi-subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            outline: none;
+        }
+
+        /* Strategy blocks */
+        .strategy-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .strategy-block {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .strategy-block h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .strategy-block p {
+            outline: none;
+            color: var(--text-muted);
+            font-size: 0.925rem;
+        }
+
+        /* Creative Grid */
+        .creative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .creative-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .creative-text {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-style: italic;
+            outline: none;
+        }
+
+        .creative-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .creative-stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .creative-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            outline: none;
+        }
+
+        .creative-stat-value {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--accent);
+            outline: none;
+        }
+
+        /* Keyword tag cloud */
+        .keyword-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .keyword-tag {
+            background: rgba(234, 67, 53, 0.08);
+            border: 1px solid rgba(234, 67, 53, 0.2);
+            color: #ff8a80;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        /* Leads closure table styling */
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .leads-table th, .leads-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .leads-table th {
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .leads-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .footer-logo-mike {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #fff;
+            letter-spacing: 2px;
+            outline: none;
+        }
+
+        .footer-logo-mike span {
+            color: var(--accent);
+        }
+
+        /* Final Presentation Section Styling */
+        .final-presentation-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 85vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .thank-you-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            outline: none;
+        }
+
+        .final-branding-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        /* Signature block layout */
+        .closing-footer-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .closing-divider {
+            width: 1px;
+            height: 50px;
+            background-color: rgba(255,255,255,0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div>
+            <div class="logo-area">
+                <div class="logo-text" contenteditable="true">Scantimburgo</div>
+            </div>
+            
+            <nav>
+                <ul class="nav-list" id="sidebarNavList">
+                    <li class="nav-item active" data-target="cover" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#cover"><span contenteditable="true">Capa do Relatório</span></a></li>
+                    <li class="nav-item" data-target="meta-ads" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#meta-ads"><span contenteditable="true">Meta Ads (WhatsApp)</span></a></li>
+                    <li class="nav-item" data-target="google-ads" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#google-ads"><span contenteditable="true">Google Ads (Pesquisa)</span></a></li>
+                    <li class="nav-item" data-target="leads-closing" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#leads-closing"><span contenteditable="true">Fechamento de Leads</span></a></li>
+                    <li class="nav-item" data-target="next-steps" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#next-steps"><span contenteditable="true">Próximos Passos</span></a></li>
+                    <li class="nav-item" data-target="finalizacao" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#finalizacao"><span contenteditable="true">Agradecimento</span></a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div>
+            <!-- Fullscreen presentation trigger button -->
+            <button class="fullscreen-btn" onclick="toggleFullScreen()">
+                <span>📺 Tela Cheia</span>
+            </button>
+            
+            <div class="footer-branding">
+                <strong contenteditable="true">Maio 2026</strong>
+                <span contenteditable="true">Performance Dashboard</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- COVER SECTION -->
+        <section id="cover" class="section-block active">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div class="cover-badge" contenteditable="true">🏆 Dashboard de Performance</div>
+            </div>
+            
+            <div class="cover-content" style="margin-top: 4rem;">
+                <div class="cover-left">
+                    <h1 contenteditable="true">Relatório de Tráfego Pago</h1>
+                    <p style="font-size: 1.75rem; color: #fff; margin-bottom: 0.75rem; font-family: 'Outfit';" contenteditable="true">Marcenaria Scantimburgo</p>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); font-weight: 300; margin-bottom: 4rem;" contenteditable="true">Análise estratégica de tráfego pago e geração de leads para WhatsApp no período de Maio de 2026.</p>
+                    
+                    <!-- Cover Signature Block -->
+                    <div class="closing-footer-layout" style="justify-content: flex-start; margin-top: 2rem;">
+                        <img src="logo-quantika.png" style="height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,210,255,0.3));" alt="QUÂNTIKA Logo">
+                        <div class="footer-logo-mike" style="margin-left: -0.5rem;" contenteditable="true">QUÂNTIKA</div>
+                        <div class="closing-divider"></div>
+                        <div style="text-align: left; font-size: 0.8rem; color: var(--text-muted);">
+                            <strong style="color: #fff; display: block; margin-bottom: 0.25rem;" contenteditable="true">SCANTIMBURGO</strong>
+                            <span contenteditable="true">Gestão de Mídia & Analytics | Maio 2026</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cover-right">
+                    <div class="cover-art" style="display: flex; justify-content: center; align-items: center;">
+                        <img src="logo-quantika.png" style="width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.4));" alt="QUÂNTIKA Logo">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- META ADS SECTION -->
+        <section id="meta-ads" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Meta Ads (Facebook / Instagram)</h2>
+                    <p contenteditable="true">Resultados das campanhas de geração de leads (mensagens) - Maio 2026</p>
+                </div>
+            </div>
+
+            <!-- Total KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Pessoas Alcançadas</div>
+                    <div class="kpi-value" contenteditable="true">32.765</div>
+                    <div class="kpi-subtext" contenteditable="true">Alcance único total</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Impressões</div>
+                    <div class="kpi-value" contenteditable="true">106.782</div>
+                    <div class="kpi-subtext" contenteditable="true">Visualizações dos anúncios</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Leads da Meta</div>
+                    <div class="kpi-value" contenteditable="true">80</div>
+                    <div class="kpi-subtext" contenteditable="true">Mensagens de WhatsApp iniciadas</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Custo por Lead</div>
+                    <div class="kpi-value" contenteditable="true">R$ 24,93</div>
+                    <div class="kpi-subtext" contenteditable="true">Custo médio por lead gerado</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Investimento</div>
+                    <div class="kpi-value" contenteditable="true">R$ 1.994,73</div>
+                    <div class="kpi-subtext" contenteditable="true">Investimento total no período</div>
+                </div>
+            </div>
+
+            <!-- Campaign breakdown -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--meta-color)"></div>
+                        Desempenho por Campanha
+                    </div>
+                </div>
+                <div class="strategy-container">
+                    <div class="strategy-block">
+                        <h4 contenteditable="true">BROTAS + TORRINHAS</h4>
+                        <p style="font-size: 0.95rem; color: #fff; margin-bottom: 0.5rem;"><strong>Métricas Principais:</strong></p>
+                        <ul style="list-style: none; font-size: 0.9rem; color: var(--text-muted); padding-left: 0.5rem;">
+                            <li>• Impressões: <strong style="color: #fff;">66.170</strong></li>
+                            <li>• Alcance: <strong style="color: #fff;">18.326</strong></li>
+                            <li>• Leads (WhatsApp): <strong style="color: #fff;">39</strong></li>
+                            <li>• Custo por Lead: <strong style="color: #fff;">R$ 25,49</strong></li>
+                            <li>• Investimento: <strong style="color: #fff;">R$ 994,02</strong></li>
+                        </ul>
+                    </div>
+                    <div class="strategy-block">
+                        <h4 contenteditable="true">PIRACICABA</h4>
+                        <p style="font-size: 0.95rem; color: #fff; margin-bottom: 0.5rem;"><strong>Métricas Principais:</strong></p>
+                        <ul style="list-style: none; font-size: 0.9rem; color: var(--text-muted); padding-left: 0.5rem;">
+                            <li>• Impressões: <strong style="color: #fff;">40.612</strong></li>
+                            <li>• Alcance: <strong style="color: #fff;">14.439</strong></li>
+                            <li>• Leads (WhatsApp): <strong style="color: #fff;">41</strong></li>
+                            <li>• Custo por Lead: <strong style="color: #fff;">R$ 24,41</strong></li>
+                            <li>• Investimento: <strong style="color: #fff;">R$ 1.000,71</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Creatives -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--accent)"></div>
+                        Melhores Criativos (Performance Individual)
+                    </div>
+                </div>
+                <div class="creative-grid">
+                    <!-- Creative 1 -->
+                    <div class="creative-card">
+                        <img src="criativo 01.png" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-card);" alt="Criativo 1">
+                        <div class="creative-text" contenteditable="true">"Você está em Piracicaba, São Pedro ou Rio Claro e procura móveis ou esquadrias de madeira com qualidade de verdade? ..."</div>
+                        <div class="creative-stats">
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">Mensagens</div>
+                                <div class="creative-stat-value" contenteditable="true">30</div>
+                            </div>
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">CPL</div>
+                                <div class="creative-stat-value" contenteditable="true">R$ 24,46</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Creative 2 -->
+                    <div class="creative-card">
+                        <img src="criativo 02.png" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-card);" alt="Criativo 2">
+                        <div class="creative-text" contenteditable="true">"Nossos projetos começam no ponto exato onde a ferramenta encontra a matéria prima. Fala Patrão..."</div>
+                        <div class="creative-stats">
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">Mensagens</div>
+                                <div class="creative-stat-value" contenteditable="true">21</div>
+                            </div>
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">CPL</div>
+                                <div class="creative-stat-value" contenteditable="true">R$ 26,52</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Creative 3 -->
+                    <div class="creative-card">
+                        <img src="criativo 03.png" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-card);" alt="Criativo 3">
+                        <div class="creative-text" contenteditable="true">Criativo 3 ( WhatsApp Conversas / Madeira Maciça & Projetados )</div>
+                        <div class="creative-stats">
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">Mensagens</div>
+                                <div class="creative-stat-value" contenteditable="true">14</div>
+                            </div>
+                            <div class="creative-stat-box">
+                                <div class="creative-stat-label" contenteditable="true">CPL</div>
+                                <div class="creative-stat-value" contenteditable="true">R$ 21,73</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GOOGLE ADS SECTION -->
+        <section id="google-ads" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Google Ads (Rede de Pesquisa)</h2>
+                    <p contenteditable="true">Resultados da campanha de geração de leads (botão do WhatsApp e orçamentos) - Maio 2026</p>
+                </div>
+            </div>
+
+            <!-- Google KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Impressões</div>
+                    <div class="kpi-value" contenteditable="true">2.632</div>
+                    <div class="kpi-subtext" contenteditable="true">Vezes que os anúncios foram exibidos</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Cliques</div>
+                    <div class="kpi-value" contenteditable="true">212</div>
+                    <div class="kpi-subtext" contenteditable="true">Cliques direcionados ao site</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Conversões (Leads)</div>
+                    <div class="kpi-value" contenteditable="true">27</div>
+                    <div class="kpi-subtext" contenteditable="true">Cliques no botão do WhatsApp</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Custo por Conversão</div>
+                    <div class="kpi-value" contenteditable="true">R$ 37,52</div>
+                    <div class="kpi-subtext" contenteditable="true">Custo por lead qualificado no site</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Custo por Clique (CPC)</div>
+                    <div class="kpi-value" contenteditable="true">R$ 4,78</div>
+                    <div class="kpi-subtext" contenteditable="true">Valor médio pago por clique</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--google-color)">
+                    <div class="kpi-label" contenteditable="true">Investimento</div>
+                    <div class="kpi-value" contenteditable="true">R$ 1.013,34</div>
+                    <div class="kpi-subtext" contenteditable="true">Investido no Google Search</div>
+                </div>
+            </div>
+
+            <!-- Keywords block -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--google-color)"></div>
+                        Principais Palavras-Chave Utilizadas
+                    </div>
+                </div>
+                <p style="font-size: 0.95rem; color: var(--text-muted);" contenteditable="true">Exibição de anúncios baseada em termos de intenção de compra de alto padrão e marcenaria exclusiva:</p>
+                <div class="keyword-cloud">
+                    <span class="keyword-tag" contenteditable="true">"marcenaria sob medida alto padrão"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria premium"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria alto padrão"</span>
+                    <span class="keyword-tag" contenteditable="true">[marcenaria alto padrão]</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria exclusiva"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria de luxo"</span>
+                    <span class="keyword-tag" contenteditable="true">[marcenaria de luxo]</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria design"</span>
+                    <span class="keyword-tag" contenteditable="true">"móveis sob medida orçamento"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria residencial orçamento"</span>
+                    <span class="keyword-tag" contenteditable="true">"móveis planejados alto padrão preço"</span>
+                    <span class="keyword-tag" contenteditable="true">"armário sob medida orçamento"</span>
+                    <span class="keyword-tag" contenteditable="true">"cozinha planejada premium orçamento"</span>
+                    <span class="keyword-tag" contenteditable="true">[orçamento marcenaria sob medida]</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria planejada orçamento"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria de alto padrão em Piracicaba"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria em Aguas de São Pedro"</span>
+                    <span class="keyword-tag" contenteditable="true">[marcenaria madeira maciça]</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria em Piracicaba"</span>
+                    <span class="keyword-tag" contenteditable="true">"móveis planejados em Rio das Pedras"</span>
+                    <span class="keyword-tag" contenteditable="true">"móveis planejados em Brotas"</span>
+                    <span class="keyword-tag" contenteditable="true">"especialista em madeira maciça"</span>
+                    <span class="keyword-tag" contenteditable="true">"marcenaria de madeira maciça em Brotas"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEADS CLOSING SECTION -->
+        <section id="leads-closing" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Fechamento de Resultado dos Leads</h2>
+                    <p contenteditable="true">Retorno operacional e comercial sobre os contatos gerados - Maio 2026</p>
+                </div>
+            </div>
+
+            <!-- Leads KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--accent: #ffd600">
+                    <div class="kpi-label" contenteditable="true">Leads em Contato</div>
+                    <div class="kpi-value" contenteditable="true">80</div>
+                    <div class="kpi-subtext" contenteditable="true">Total de leads gerados</div>
+                </div>
+                <div class="kpi-card" style="--accent: #ff3d00">
+                    <div class="kpi-label" contenteditable="true">Sem Resposta</div>
+                    <div class="kpi-value" contenteditable="true">29</div>
+                    <div class="kpi-subtext" contenteditable="true">Leads sem retorno (36,2%)</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--accent)">
+                    <div class="kpi-label" contenteditable="true">Em Negociação</div>
+                    <div class="kpi-value" contenteditable="true">3</div>
+                    <div class="kpi-subtext" contenteditable="true">Propostas em andamento</div>
+                </div>
+                <div class="kpi-card" style="--accent: #00e676">
+                    <div class="kpi-label" contenteditable="true">Venda Efetivada</div>
+                    <div class="kpi-value" contenteditable="true">1</div>
+                    <div class="kpi-subtext" contenteditable="true">Negócios fechados no mês</div>
+                </div>
+                <div class="kpi-card" style="--accent: #00e676">
+                    <div class="kpi-label" contenteditable="true">Valor Vendas Efetivadas</div>
+                    <div class="kpi-value" contenteditable="true">R$ 1.360,00</div>
+                    <div class="kpi-subtext" contenteditable="true">Faturamento direto inicial</div>
+                </div>
+            </div>
+
+            <!-- Closing Table -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: #00e676"></div>
+                        Detalhamento Comercial por Linha de Produto
+                    </div>
+                </div>
+                <table class="leads-table">
+                    <thead>
+                        <tr>
+                            <th>Categoria / Produto</th>
+                            <th>Em Negociação (Qtd)</th>
+                            <th>Valor em Negociação</th>
+                            <th>Vendas Fechadas (Qtd)</th>
+                            <th>Valor Vendas Efetivas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: #fff; font-weight: 500;" contenteditable="true">Planejados MDF</td>
+                            <td contenteditable="true">1</td>
+                            <td contenteditable="true">R$ 1.530,00</td>
+                            <td contenteditable="true">1</td>
+                            <td contenteditable="true">R$ 1.360,00</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #fff; font-weight: 500;" contenteditable="true">Madeira Maciça</td>
+                            <td contenteditable="true">2</td>
+                            <td contenteditable="true">R$ 16.930,00</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">R$ 0,00</td>
+                        </tr>
+                        <tr style="border-top: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.01);">
+                            <td style="color: #fff; font-weight: 700;" contenteditable="true">TOTAL COMERCIAL</td>
+                            <td style="font-weight: 700; color: var(--accent);" contenteditable="true">3</td>
+                            <td style="font-weight: 700; color: var(--accent);" contenteditable="true">R$ 18.460,00</td>
+                            <td style="font-weight: 700; color: #00e676;" contenteditable="true">1</td>
+                            <td style="font-weight: 700; color: #00e676;" contenteditable="true">R$ 1.360,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- NEXT STEPS SECTION -->
+        <section id="next-steps" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Próximos Passos</h2>
+                    <p contenteditable="true">Ações recomendadas e ajustes estratégicos de mídia para Junho</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--accent)"></div>
+                        Planejamento Estratégico para Junho
+                    </div>
+                </div>
+                <div style="padding: 1rem 0;">
+                    <p style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; outline: none;" contenteditable="true">
+                        Nas campanhas de WhatsApp (Meta Ads), geramos no mês de Maio um total de <strong>80 mensagens</strong>, custando <strong>R$ 24,93 por lead</strong>. No Google Ads, obtivemos <strong>27 conversões</strong> custando <strong>R$ 37,52 por conversão</strong>.
+                    </p>
+                    
+                    <div class="strategy-container">
+                        <div class="strategy-block" style="background: rgba(24, 119, 242, 0.03); border-color: rgba(24, 119, 242, 0.1);">
+                            <h4 style="color: var(--meta-color);" contenteditable="true">Meta Ads (WhatsApp)</h4>
+                            <p style="font-size: 0.95rem;" contenteditable="true">No mês de Junho continuaremos a veicular campanhas otimizando para o WhatsApp, focando no escoamento de criativos de alta conversão para trazer novos leads qualificados e reduzir o custo por contato.</p>
+                        </div>
+                        <div class="strategy-block" style="background: rgba(234, 67, 53, 0.03); border-color: rgba(234, 67, 53, 0.1);">
+                            <h4 style="color: var(--google-color);" contenteditable="true">Google Ads (Rede de Pesquisa)</h4>
+                            <p style="font-size: 0.95rem;" contenteditable="true">Faremos a adição de mais 3 grupos de anúncios estratégicos: <strong>Localizações Desejadas</strong> que a marcenaria atende, <strong>Orçamento & Fundo de Funil</strong> para captação de intenção direta de compra, e <strong>Alto Padrão</strong> para segmentação qualificada de luxo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINALIZATION SECTION -->
+        <section id="finalizacao" class="section-block">
+            <div class="final-presentation-block">
+                <h2 class="thank-you-title" contenteditable="true">Muito obrigado pela parceria!</h2>
+                
+                <div class="kpi-grid" style="width: 100%; max-width: 900px; margin-top: 1rem; margin-bottom: 3rem;">
+                    <div class="kpi-card" style="--accent: var(--meta-color)">
+                        <div class="kpi-label" contenteditable="true">Investimento Meta Ads</div>
+                        <div class="kpi-value" contenteditable="true">R$ 1.994,73</div>
+                        <div class="kpi-subtext" contenteditable="true">80 Leads Iniciados</div>
+                    </div>
+                    <div class="kpi-card" style="--accent: var(--google-color)">
+                        <div class="kpi-label" contenteditable="true">Investimento Google Ads</div>
+                        <div class="kpi-value" contenteditable="true">R$ 1.013,34</div>
+                        <div class="kpi-subtext" contenteditable="true">27 Conversões WhatsApp</div>
+                    </div>
+                    <div class="kpi-card" style="--accent: #00e676">
+                        <div class="kpi-label" contenteditable="true">Venda Efetivada + Propostas</div>
+                        <div class="kpi-value" contenteditable="true">R$ 19.820,00</div>
+                        <div class="kpi-subtext" contenteditable="true">Fechamentos e negociações</div>
+                    </div>
+                </div>
+
+                <div class="final-branding-card" style="background: transparent; border: none; padding: 0;">
+                    <!-- Closing Signature Block -->
+                    <div class="closing-footer-layout">
+                        <img src="logo-quantika.png" style="height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,210,255,0.3));" alt="QUÂNTIKA Logo">
+                        <div class="footer-logo-mike" style="margin-left: -0.5rem;" contenteditable="true">QUÂNTIKA</div>
+                        <div class="closing-divider"></div>
+                        <div style="text-align: left; font-size: 0.8rem; color: var(--text-muted);">
+                            <strong style="color: #fff; display: block; margin-bottom: 0.25rem;" contenteditable="true">SCANTIMBURGO</strong>
+                            <span contenteditable="true">Gestão de Mídia & Analytics | Maio 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Fullscreen presentation API trigger
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // Tab Switching Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.section-block');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Prevent default routing since we handle it dynamically
+            e.preventDefault();
+            const target = item.getAttribute('data-target');
+
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+
+            sections.forEach(sec => {
+                sec.classList.remove('active');
+                if (sec.id === target) {
+                    sec.classList.add('active');
+                }
+            });
+        });
+    });
+
+    // Sidebar navigation items Drag and Drop sorting functionality
+    let dragSrcEl = null;
+
+    function handleDragStart(e) {
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        e.dataTransfer.setData('text/plain', this.getAttribute('data-target'));
+        this.style.opacity = '0.4';
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        this.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        this.classList.remove('drag-over');
+
+        if (dragSrcEl !== this) {
+            // Swap inner html
+            dragSrcEl.innerHTML = this.innerHTML;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+
+            // Swap target attributes
+            const sourceTarget = dragSrcEl.getAttribute('data-target');
+            const targetTarget = this.getAttribute('data-target');
+            
+            dragSrcEl.setAttribute('data-target', targetTarget);
+            this.setAttribute('data-target', sourceTarget);
+
+            // Re-apply event listeners to anchor clicks inside newly swapped items
+            setupNavClicks();
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1.2';
+        navItems.forEach(item => {
+            item.classList.remove('drag-over');
+        });
+    }
+
+    function setupNavClicks() {
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach(item => {
+            item.removeEventListener('click', handleItemClick);
+            item.addEventListener('click', handleItemClick);
+        });
+    }
+
+    function handleItemClick(e) {
+        e.preventDefault();
+        const target = this.getAttribute('data-target');
+
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
+
+        sections.forEach(sec => {
+            sec.classList.remove('active');
+            if (sec.id === target) {
+                sec.classList.add('active');
+            }
+        });
+    }
+
+    // Attach initial events
+    setupNavClicks();
+</script>
+</body>
+</html>
