@@ -695,22 +695,39 @@
             .nav-item {
                 width: 100%;
                 border-radius: 8px;
-                border: 1px solid var(--border-card);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                background: rgba(255, 255, 255, 0.02);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(5px);
             }
 
             .nav-item a {
-                padding: 0.5rem 0.2rem;
+                padding: 0.6rem 0.2rem;
                 font-size: 0.72rem;
+                font-weight: 600;
+                font-family: 'Outfit', sans-serif;
                 justify-content: center;
                 text-align: center;
+                color: var(--text-muted);
+                transition: all 0.3s ease;
+            }
+
+            .nav-item.active {
+                background: linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(24, 119, 242, 0.1) 100%);
+                border-color: var(--accent);
+                box-shadow: 0 0 12px rgba(0, 210, 255, 0.15);
+            }
+
+            .nav-item.active a {
+                color: #fff;
             }
 
             .nav-item.active a, .nav-item a:hover {
                 border-left: none;
-                border-bottom: 2px solid var(--accent);
+                border-bottom: none;
                 padding-left: 0.2rem;
-                padding-bottom: calc(0.5rem - 2px);
-                background: rgba(0, 210, 255, 0.08);
+                padding-bottom: 0.6rem;
+                background: none;
             }
 
             .fullscreen-btn, .footer-branding {
