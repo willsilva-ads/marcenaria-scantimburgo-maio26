@@ -684,38 +684,32 @@
                 width: 100%;
             }
 
-            /* Horizontal Menu Scroll */
+            /* Grid Menu (2 to 3 per row) */
             .nav-list {
-                display: flex;
-                flex-direction: row;
-                gap: 0.5rem;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-
-            .nav-list::-webkit-scrollbar {
-                display: none;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.4rem;
+                width: 100%;
             }
 
             .nav-item {
-                flex: 0 0 auto;
-                width: auto;
-                border-radius: 20px;
+                width: 100%;
+                border-radius: 8px;
                 border: 1px solid var(--border-card);
             }
 
             .nav-item a {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
+                padding: 0.5rem 0.2rem;
+                font-size: 0.72rem;
+                justify-content: center;
+                text-align: center;
             }
 
             .nav-item.active a, .nav-item a:hover {
                 border-left: none;
                 border-bottom: 2px solid var(--accent);
-                padding-left: 1rem;
-                padding-bottom: calc(0.6rem - 2px);
+                padding-left: 0.2rem;
+                padding-bottom: calc(0.5rem - 2px);
                 background: rgba(0, 210, 255, 0.08);
             }
 
@@ -725,7 +719,7 @@
 
             .main-content {
                 padding: 1.2rem;
-                padding-top: 9.5rem; /* Space for sticky horizontal sidebar */
+                padding-top: 11.5rem; /* Space for grid sticky menu */
                 overflow-x: hidden;
                 width: 100%;
             }
